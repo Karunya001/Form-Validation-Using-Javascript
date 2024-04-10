@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form Validation</title>
+<style>
+    /* CSS for form and table styling */
+    body {
+        background-image: url('abc.jpeg'); /* Background image */
+        background-size: cover;
+        background-repeat: no-repeat;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+    form {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 3px solid #140404;
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.8); /* Form background color with transparency */
+    }
+    input[type="text"], input[type="number"], input[type="email"], select, textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: rgba(255, 255, 255, 0.8); /* Table background color with transparency */
+    }
+    table, th, td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    .navbar {
+        overflow: hidden;
+        background-color: #3f0581;
+    }
+    .navbar a {
+        float: left;
+        display: block;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 14px 20px;
+        text-decoration: none;
+    }
+    .navbar a:hover {
+        background-color: #fffefe;
+        color: black;
+    }
+</style>
+</head>
+<body>
+
+<div class="navbar">
+    <a href="home.html">Home</a>
+    <a href="ac.html">Academics</a> 
+    <a href="clubs.html">Clubs and Events</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="cgpa.html">Results</a>
+</div>
+
+<form id="myForm" onsubmit="return validateForm()">
+    <h2>Form Validation</h2>
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" placeholder="Enter your full name">
+
+    <label for="roll">Roll:</label>
+    <input type="text" id="roll" name="roll" placeholder="Enter your roll">
+
+    <label for="dob">Date of Birth:</label>
+    <input type="date" id="dob" name="dob">
+
+    <label for="degree" style="display: block; margin-top: 10px;">Degree:</label>
+    <select id="degree" name="degree" onchange="updateCourses()">
+        <option value="">Select Degree</option>
+        <option value="BE">BE</option>
+        <option value="Btech">Btech</option>
+    </select>
+
+    <label for="course">Course:</label>
+    <select id="course" name="course" disabled>
+        <option value="">Select Course</option>
+    </select>
+
+    <label for="address">Address:</label>
+    <textarea id="address" name="address" placeholder="Enter your address"></textarea>
+
+    <label for="phone">Phone:</label>
+    <input type="text" id="phone" name="phone" placeholder="Enter your phone number">
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" placeholder="Enter your email" value="@gmail.com">
+
+    <label><input type="checkbox" id="agree" name="agree"> I agree</label>
+
+    <input type="submit" value="Submit" id="submitBtn" disabled>
+</form>
+
+<table id="userData">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Roll</th>
+            <th>Date of Birth</th>
+            <th>Age</th>
+            <th>Degree</th>
+            <th>Course</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<script>
+    document.getElementById("agree").addEventListener("change", function() {
+        document.getElementById("submitBtn").disabled = !this.checked;
+    });
+    
+    function updateCourses() {
+        var degree = document.getElementById("degree").value;
+        var courseSelect = document.getElementById("course");
+        courseSelect.innerHTML = ""; // Clear previous options
+        
+        // Add options based on selected degree
+        if (degree === "BE") {
+            courseSelect.appendChild(new Option("Computer Science and Engineering", "Computer Science and Engineering"));
+            courseSelect.appendChild(new Option("Electrical and Electronics Engineering", "Electrical and Electronics Engineering"));
+            courseSelect.appendChild(new Option("Mechanical Engineering", "Mechanical Engineering"));
+        } else if (degree === "Btech") {
+            courseSelect.appendChild(new Option("Chemical Engineering", "Chemical Engineering"));
+            courseSelect.appendChild(new Option("Information Technology", "Information Technology"));
+            courseSelect.appendChild(new Option("Food Technology", "Food Technology"));
+        }
+        
+        // Enable course select
+        courseSelect.disabled = false;
+    }
+    
+    function validateForm() {
+        var name = document.getElementById("name").value.trim();
+        var roll = document.getElementById("roll").value.trim();
+        var dob = document.getElementById("dob").value;
+        var degree = document.getElementById("degree").value;
+        var course = document.getElementById("course").value.trim();
+        var address = document.getElementById("address").value.trim();
+        var phone = document.getElementById("phone").value.trim();
+        var email = document.getElementById("email").value.trim();
+        var agree = document.getElementById("agree").checked;
+    
+        // Validation rules
+        var nameRegex = /^[a-zA-Z\s]{2,50}$/;
+        var phoneRegex = /^[0-9]{10}$/;
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+        // Check if all fields are filled
+        if (name === "" || roll === "" || dob === "" || degree === "" || course === "" || address === "" || phone === "" || email === "") {
+            alert("All fields are required");
+            return false;
+        }
+    
+        // Check name validation
+        if (!nameRegex.test(name)) {
+            alert("Please enter a valid name (alphabets and spaces only, 2-50 characters)");
+            return false;
+        }
+    
+        // Check phone validation
+        if (!phoneRegex.test(phone)) {
+            alert("Please enter a valid phone number (10 digits only)");
+            return false;
+        }
+    
+        // Check email validation
+        if (!emailRegex.test(email)) {
+            alert("Please enter a valid email address");
+            return false;
+        }
+    
+        // Check if user has agreed
+        if (!agree) {
+            alert("Please agree to the terms and conditions");
+            return false;
+        }
+
+        // Calculate age
+        var age = calculateAge(dob);
+
+        // Add data to table
+        var table = document.getElementById("userData").getElementsByTagName('tbody')[0];
+        var newRow = table.insertRow(table.rows.length);
+        var cells = [];
+        cells[0] = newRow.insertCell(0);
+        cells[1] = newRow.insertCell(1);
+        cells[2] = newRow.insertCell(2);
+        cells[3] = newRow.insertCell(3);
+        cells[4] = newRow.insertCell(4);
+        cells[5] = newRow.insertCell(5);
+        cells[6] = newRow.insertCell(6);
+        cells[7] = newRow.insertCell(7);
+        cells[8] = newRow.insertCell(8);
+        cells[9] = newRow.insertCell(9);
+        cells[0].innerHTML = name;
+        cells[1].innerHTML = roll;
+        cells[2].innerHTML = dob;
+        cells[3].innerHTML = age;
+        cells[4].innerHTML = degree;
+        cells[5].innerHTML = course;
+        cells[6].innerHTML = address;
+        cells[7].innerHTML = phone;
+        cells[8].innerHTML = email;
+    
+        // If all validations pass, reset the form
+        document.getElementById("myForm").reset();
+        // Prevent form submission
+        return false;
+    }
+
+    function calculateAge(dob) {
+        var today = new Date();
+        var birthDate = new Date(dob);
+        var age = today.getFullYear() - birthDate.getFullYear();
+        var m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
+    }
+</script>
