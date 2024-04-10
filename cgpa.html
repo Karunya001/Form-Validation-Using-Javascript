@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CGPA Calculator</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #0c0000;
+    }
+    #calculator {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 20px auto;
+        max-width: 600px;
+    }
+    h2 {
+        text-align: center;
+    }
+    label {
+        display: block;
+        margin-bottom: 8px;
+    }
+    input[type="text"] {
+        width: calc(50% - 8px);
+        padding: 8px;
+        margin-bottom: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    input[type="button"] {
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 4px;
+        margin-top: 10px;
+    }
+    input[type="button"]:hover {
+        background-color: #45a049;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+</head>
+<body>
+<div id="calculator">
+    <h2>Kongu Engineering College</h2>
+    <hr>
+    <h3>Student Details</h3>
+    <label for="name">Name:</label>
+    <input type="text" id="name" placeholder="Enter your name">
+    <label for="roll">Roll No:</label>
+    <input type="text" id="roll" placeholder="Enter your roll number">
+    <label for="degree">Degree with Course:</label>
+    <input type="text" id="degree" placeholder="Enter your degree with course">
+
+    <h3>Subjects</h3>
+    <div id="inputFields">
+        <table id="subjectTable">
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Subject Name</th>
+                    <th>Credits</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Row for the first subject will be added programmatically -->
+            </tbody>
+        </table>
+    </div>
+    <input type="button" value="Add Subject" onclick="addRow()">
+    <input type="button" value="Calculate CGPA" onclick="calculateCGPA()">
+    <div id="result"></div>
+</div>
+
+<script>
+let rowCount = 1;
+
+function addRow() {
+    const tbody = document.querySelector('#subjectTable tbody');
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+        <td>${rowCount}</td>
+        <td><input type="text" class="subject" placeholder="Subject Name"></td>
+        <td><input type="text" class="credits" placeholder="Credits"></td>
+        <td><input type="text" class="grade" placeholder="Grade"></td>
+    `;
+
+    tbody.appendChild(tr);
+    rowCount++;
+}
+function calculateCGPA() {
+    const name = document.getElementById('name').value.trim();
+    const roll = document.getElementById('roll').value.trim();
+    const degree = document.getElementById('degree').value.trim();
+
+    const subjectInputs = document.querySelectorAll('.subject');
+    const creditsInputs = document.querySelectorAll('.credits');
+    const gradeInputs = document.querySelectorAll('.grade');
+
+    let totalGradePoints = 0;
+    let totalCredits = 0;
+    let hasU = false; // Flag to check if 'U' grade is encountered
+
+    for (let i = 0; i < subjectInputs.length; i++) {
+        let credits = parseFloat(creditsInputs[i].value.trim());
+        let grade = gradeInputs[i].value.trim().toUpperCase();
+
+        if (grade === 'U') {
+            hasU = true; // Set flag to true if 'U' grade is encountered
+            break; // Exit loop if 'U' grade is encountered
+        }
+
+        let gradePoint;
+
+        switch (grade) {
+            case 'O':
+                gradePoint = 10;
+                break;
+            case 'A+':
+                gradePoint = 9;
+                break;
+            case 'A':
+                gradePoint = 8;
+                break;
+            case 'B+':
+                gradePoint = 7;
+                break;
+            case 'B':
+                gradePoint = 6;
+                break;
+            case 'C':
+                gradePoint = 5;
+                break;
+            default:
+                alert("Invalid grade: " + grade);
+                return;
+        }
+
+        totalGradePoints += gradePoint * credits;
+        totalCredits += credits;
+    }
+
+    if (hasU) { // If 'U' grade is encountered, show a message instead of calculating CGPA
+        document.getElementById('result').innerHTML = `
+            <h3>Result</h3>
+            <p>Name: ${name}</p>
+            <p>Roll No: ${roll}</p>
+            <p>Degree with Course: ${degree}</p>
+            <p>CGPA: CGPA cannot be applicable due to 'U' grade.</p>
+        `;
+    } else if (totalCredits === 0) {
+        alert("Total credits cannot be zero.");
+        return;
+    } else {
+        const cgpa = (totalGradePoints / totalCredits).toFixed(2);
+        document.getElementById('result').innerHTML = `
+            <h3>Result</h3>
+            <p>Name: ${name}</p>
+            <p>Roll No: ${roll}</p>
+            <p>Degree with Course: ${degree}</p>
+            <p>CGPA: ${cgpa}</p>
+        `;
+    }
+}
+
+</script>
+</body>
+</html>
